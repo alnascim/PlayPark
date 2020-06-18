@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+	<h:head>
+		<style>
+.meumenu .ui-menu-child {
+	width: 3700px !important;
+	display: inline-block;
+	padding: 0;
+}
+
+ui-menubutton .ui-button {
+	margin: 0;
+}
+</style>
+
+
+	</h:head>
+	<h:form id="mnu_master" enctype="multipart/form-data"
+		accept-charset="UTF-8">
+
+		<p:menuButton value="Menu">
+			<p:menuitem value="Caixa" icon="ui-icon-script"
+				outcome="/Pages/Caixa.xhtml" />	
+			<p:menuitem value="Entradas" icon="ui-icon-script"
+				outcome="/Pages/ParkNewClient.xhtml" />	
+			<p:menuitem value="Cadastro Itens" icon="ui-icon-script"
+				outcome="/Pages/CadastroItens.xhtml" />	
+			<p:menuitem value="Parametros E-Mail" icon="ui-icon-script"
+				outcome="/Pages/Parameters.xhtml" />	
+
+		</p:menuButton>
+
+	
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:pe="http://primefaces.org/ui/extensions"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+			<p:panel style="width: 100%">
+				<p:dataTable id="tblUsuario"
+					emptyMessage="Nenhum Registro Encontrado." value="#{MBCaixa.itens}"
+					var="item" paginator="true" rows="18">
+
+					<f:facet name="header">
+					Lista Parcial do Caixa de Hoje
+					</f:facet>
+					<f:facet name="footer">
+						<p:commandButton value="Fechar Caixa"
+							action="#{MBFechaCaixa.prepararNovo}"
+							oncomplete="PF('dlgFecha').show();" update=":frmFecha:pnlFecha">
+							<f:setPropertyActionListener target="#{MBFechaCaixa.itens_fecha}"
+								value="#{item}" />
+						</p:commandButton>
+
+						<p:commandButton action="ParkNewClient.xhtml?faces-redirect=true"
+							value="Voltar" />
+
+					</f:facet>
+					<p:column headerText="Ticket Nro."
+						style="width:130px;text-align:center;">
+						<h:outputText value="#{item.id_controle}" />
+					</p:column>
+
+					<p:column headerText="Nome da Criança"
+						style="width:250px;text-align:left;">
+						<h:outputText value="#{item.nome}" />
+					</p:column>
+
+					<p:column headerText="Valor da Minutagem"
+						style="width:150px;text-align:left;">
+						<h:outputText value="#{item.svalor_min}" />
+					</p:column>
+					<p:column headerText="Valor de Consumos Diversos"
+						style="width:150px;text-align:left;">
+						<h:outputText value="#{item.svalor_div}" />
+					</p:column>
+					<p:column headerText="Valor Total"
+						style="width:150px;text-align:left;">
+						<h:outputText value="#{item.svalor_tot}" />
+					</p:column>
+
+				</p:dataTable>
+
+			</p:panel>
+
+		</h:form>
+		<p:dialog widgetVar="dlgFecha" closable="false" draggable="false"
+			modal="true" appendTo="@(body)" resizable="false"
+			header="Fechar Caixa">
+			<h:form id="frmFecha">
+				<h:panelGrid id="pnlFecha">
+					<p:dataTable id="tblUsuario"
+						emptyMessage="Nenhum Registro Encontrado."
+						value="#{MBFechaCaixa.itens_fecha}" var="item" paginator="true"
+						rows="18">
+
+						<p:column headerText="Tipo de Pagamento"
+							style="width:130px;text-align:center;">
+							<h:outputText value="#{item.nome}" />
+						</p:column>
+
+						<p:column headerText="Valor Total"
+							style="width:150px;text-align:left;">
+							<h:outputText value="#{item.svalor_tot}" />
+						</p:column>
+
+					</p:dataTable>
+				</h:panelGrid>
+
+				<h:panelGrid columns="2">
+					<p:commandButton value="Fechar Caixa"
+						actionListener="#{MBFechaCaixa.print_ticket}"
+						oncomplete="PF('dlgFecha').hide(); tabelaUsuario.clearfilters();"
+						update=":frmUsuListagem:tblUsuario :msgGlobal"
+						action="Caixa.xhtml?faces-redirect=true" />
+					<p:commandButton value="Cancelar" onclick="PF('dlgFecha').hide();" />
+				</h:panelGrid>
+
+			</h:form>
+
+
+		</p:dialog>
+
+
+	</ui:define>
+
+</ui:composition>
+

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+				<p:panel style="width: 100%">
+					<h:panelGrid id="pnlListar">
+						<p:dataTable id="tbl_001"
+							emptyMessage="Nenhum Registro Encontrado."
+							value="#{MBParam.itens}" var="item" paginator="false" rows="20"
+							style="width: 100%">
+							<f:facet name="header">
+								E-Mail Cadastrado
+				            </f:facet>
+
+							<p:column headerText="E-Mail Remetente"
+								style="width:300px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="E-Mail Remetente" />
+								</f:facet>
+								<h:outputText value="#{item.mail_sender}" />
+							</p:column>
+							<p:column headerText="E-Mail Destino"
+								style="width:300px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="E-Mail Destino" />
+								</f:facet>
+								<h:outputText value="#{item.mail_destination}" />
+							</p:column>
+
+							<p:column headerText="Envio de Email Ativo"
+								style="width:120px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Envio de Email Ativo" />
+								</f:facet>
+								<h:outputText value="#{item.mail_send}" />
+							</p:column>
+
+							<p:column headerText="Alterar Dados"
+								style="width:60px;text-align:center;">
+								<p:commandButton icon="ui-icon-edit" title="Alterar Dados"
+									oncomplete="PF('dlgAlterar').show();"
+									update=":frmAlterar:pnlAlterar">
+									<f:setPropertyActionListener target="#{MBParam.parameters}"
+										value="#{item}" />
+								</p:commandButton>
+
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+			<p:dialog widgetVar="dlgAlterar" closable="false"
+				draggable="false" modal="true" appendTo="@(body)" resizable="false">
+				<h:form id="frmAlterar">
+					<h:panelGrid id="pnlAlterar" columns="2">
+						<h:outputText value="E-Mail Remetente" />
+						<p:inputText value="#{MBParam.parameters.mail_sender}" size="45"
+							maxlength="100"/>
+
+						<h:outputText value="Senha E-Mail Remetente" />
+						<p:password value="#{MBParam.parameters.mail_password}" size="45"
+							maxlength="99" />
+
+						<p:outputLabel value="E-Mail Destino" />
+						<p:inputText value="#{MBParam.parameters.mail_destination}" size="45"
+							maxlength="99" />
+
+						<p:outputLabel value="Enviar Automátivo S/N" />
+						<p:inputText value="#{MBParam.parameters.mail_send}" size="1"
+							maxlength="1" />
+
+
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Gravar Dados"
+							actionListener="#{MBParam.salvar}"
+							oncomplete="PF('dlgAlterar').hide(); tabelaUsuario.clearfilters();"
+							update=":frmUsuListagem:tbl_001 :msgGlobal"
+							action="Parameters.xhtml?faces-redirect=true" />
+						<p:commandButton value="Voltar"
+							onclick="PF('dlgAlterar').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+
+

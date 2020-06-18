@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+		<h:outputStylesheet library="css" name="estilos.css" />
+		<p:layout style="min-width:600px;min-height:200px;">
+
+			<p:layoutUnit position="north">
+				<h:form id="frmUsuNovo" widgetVar="widgetVar_001">
+					<h:panelGrid id="pnlDados" columns="2">
+						<h:outputLabel value="Controle de Entrada  " for="lote" />
+						<p:inputText id="lote" value="#{MBEntradas.entradas.id_controle}"
+							size="14" disabled="true" />
+					</h:panelGrid>
+				</h:form>
+			</p:layoutUnit>
+
+			<p:layoutUnit position="west" resizable="false" size="285"
+				minSize="40" maxSize="285">
+				<p:panel header="Tempo de Permanência">
+					<p:dataTable id="tblUsuario"
+						emptyMessage="Nenhum Registro Encontrado"
+						value="#{MBEntradas.list_values}" var="item" rows="8">
+
+						<f:facet name="header">
+							Tempo de Permanência - Valor
+						</f:facet>
+
+						<p:column headerText="Minutos"
+							style="width:80px;text-align:center;">
+							<h:outputText value="#{item.t_tempo}" />
+						</p:column>
+
+						<p:column headerText="Valor" style="width:55px;text-align:center;">
+							<h:outputText value="#{item.svalor}" />
+						</p:column>
+
+
+						<p:column headerText="Escolher"
+							style="width:45px;text-align:center;">
+							<p:commandButton icon=" ui-icon-clock" title="Calcular"
+								action="#{MBEntradas.setminutagem}"
+								oncomplete="PF('dlgIncluir').show();"
+								update=":frmIncluir:pnlIncNovo">
+								<f:setPropertyActionListener target="#{MBEntradas.preco}"
+									value="#{item}" />
+							</p:commandButton>
+
+						</p:column>
+					</p:dataTable>
+
+				</p:panel>
+
+				<p:panel id="pnlentrada" header="">
+					<h3 style="margin-top: 0">Horário de Entrada</h3>
+					<p:clock />
+
+					<!-- 					<h3>Analog</h3> -->
+					<!-- 					<p:clock displayMode="analog"/> -->
+				</p:panel>
+
+			</p:layoutUnit>
+
+			<p:layoutUnit position="center">
+				<h:form id="frmUsuListagem" widgetVar="tabelaUsuario">
+					<p:panel style="width: 100%">
+						<h:panelGrid id="pnlListar">
+
+							<p:dataTable id="tblEntradas"
+								emptyMessage="Nenhum Registro Encontrado."
+								value="#{MBEntradas.itens}"
+								paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} "
+								var="item" paginator="true" rows="8">
+
+
+								<f:facet name="header">
+							Lista de Entradas
+						</f:facet>
+								<p:column headerText="Ticket Nro."
+									style="width:80px;text-align:center;">
+									<p:commandLink actionListener="#{MBEntradas.prepararNovo}"
+										oncomplete="PF('dlgAdCarrinho').show();"
+										update=":frmcarrinho:pnlcarrinho">
+										<f:setPropertyActionListener target="#{MBEntradas.entradas}"
+											value="#{item}" />
+										<h:outputText value="#{item.id_controle}" />
+									</p:commandLink>
+
+								</p:column>
+
+								<p:column headerText="Nome do Responsável"
+									style="width:190px;text-align:left;">
+									<h:outputText value="#{item.nome}" />
+								</p:column>
+								<p:column headerText="Nome da Criança"
+									style="width:100px;text-align:left;">
+									<h:outputText value="#{item.sdepend}" />
+								</p:column>
+								<p:column headerText="Tempo Inicial"
+									style="width:40px;text-align:center;">
+									<h:outputText value="#{item.minutos} Min." />
+								</p:column>
+								<p:column headerText="Valor Inicial"
+									style="width:60px;text-align:center;">
+									<h:outputText value="#{item.svalor_m}" />
+								</p:column>
+
+								<p:column headerText="Horário Inicial"
+									style="width:40px;text-align:center;">
+									<h:outputText value="#{item.sperini}" />
+								</p:column>
+								<p:column headerText="Horário Final"
+									style="width:40px;text-align:center;">
+									<h:outputText value="#{item.sperfim}" />
+								</p:column>
+								<p:column headerText="Valor Diversos"
+									style="width:60px;text-align:center;">
+									<h:outputText value="#{item.svalor_d}" />
+								</p:column>
+
+								<p:column headerText="Excedeu S/N ?"
+									style="width:40px;text-align:center;">
+									<h:outputText value="#{item.timeover}" />
+								</p:column>
+								<p:column headerText="Opções" style="text-align: center;">
+									<p:commandButton icon="ui-icon-trash" title="Remover Entrada"
+										oncomplete="PF('dlgExcluir').show();"
+										update=":frmExcluir:pnlExcNovo">
+										<f:setPropertyActionListener target="#{MBEntradas.entradas}"
+											value="#{item}" />
+									</p:commandButton>
+									<p:commandButton icon="ui-note" title="Fechar Comanda"
+										oncomplete="PF('dlgFecharComanda').show();"
+										update=":frmFecharComanda:pnlFecharComanda">
+										<f:setPropertyActionListener target="#{MBEntradas.entradas}"
+											value="#{item}" />
+									</p:commandButton>
+
+								</p:column>
+
+
+							</p:dataTable>
+						</h:panelGrid>
+					</p:panel>
+				</h:form>
+				<p:dialog widgetVar="dlgFecharComanda" closable="false"
+					draggable="false" modal="true" appendTo="@(body)" resizable="false"
+					header="Confirmar Fechamento da Comanda  ?">
+					<h:form id="frmFecharComanda">
+						<h:panelGrid id="pnlFecharComanda" columns="2">
+							<h:outputText value="Ticket Número" />
+							<h:outputText value="#{MBEntradas.entradas.id_controle}" />
+							<h:outputText value="Valor Total da Comanda" />
+							<h:outputText value="#{MBEntradas.entradas.sTotal}" />
+
+							<p:outputLabel value="Tipo de Pagamento" />
+							<p:inputText value="#{MBEntradas.entradas.tipo_pagto}" size="40"
+								maxlength="99" />
+
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<p:commandButton value="Sim"
+								actionListener="#{MBEntradas.fechar_comanda}"
+								oncomplete="PF('dlgFecharComanda').hide(); tabelaUsuario.clearfilters();"
+								update=":frmUsuListagem:pnlListar :msgGlobal"
+								action="ParkNewClient.xhtml?faces-redirect=true" />
+							<p:commandButton value="Não"
+								onclick="PF('dlgFecharComanda').hide();" />
+						</h:panelGrid>
+					</h:form>
+				</p:dialog>
+				<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+					modal="true" appendTo="@(body)" resizable="false"
+					header="Excluir Item">
+
+					<h:form id="frmExcluir">
+						<h:panelGrid id="pnlExcNovo" columns="2">
+							<h:outputText value="ID Interno" />
+							<h:outputText value="#{MBEntradas.entradas.id}" />
+
+							<h:outputText value="Nome do Item" />
+							<h:outputText value="#{MBEntradas.entradas.id_controle}" />
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<p:commandButton value="Excluir"
+								actionListener="#{MBEntradas.excluir}"
+								oncomplete="PF('dlgExcluir').hide(); tabelaUsuario.clearfilters();"
+								update=":frmUsuListagem:tblEntradas :msgGlobal"
+								action="ParkNewClient.xhtml?faces-redirect=true" />
+							<p:commandButton value="Cancelar"
+								onclick="PF('dlgExcluir').hide();" />
+						</h:panelGrid>
+
+					</h:form>
+
+
+				</p:dialog>
+				<p:dialog widgetVar="dlgIncluir" closable="false" draggable="false"
+					modal="true" appendTo="@(body)" resizable="false"
+					header="Confirmar Tempo de Recreação ?">
+					<h:form id="frmIncluir">
+						<h:panelGrid id="pnlIncNovo" columns="2">
+
+							<p:outputLabel value="Nome do Responsável" />
+							<p:inputText value="#{MBEntradas.entradas.nome}" size="45"
+								maxlength="145" />
+
+							<p:outputLabel value="Nome da Criança" />
+							<p:inputText value="#{MBEntradas.entradas.sdepend}" size="45"
+								maxlength="145" />
+
+							<p:outputLabel for="effect" value="Data de Nascimento" />
+							<p:calendar id="effect" value="#{MBEntradas.entradas.ddata_nasc}"
+								effect="fold" locale="pt_BR" pattern="dd/MM/yyyy" />
+
+							<p:outputLabel value="Ticket" />
+							<h:outputText value="#{MBEntradas.entradas.id_controle}" />
+
+
+							<p:outputLabel value="Tempo Escolhido. " />
+							<h:outputText value="#{MBEntradas.preco.t_tempo}" />
+
+							<p:outputLabel value="Valor a Pagar" />
+							<h:outputText value="#{MBEntradas.preco.svalor}" />
+
+							<p:outputLabel value="Horário de Entrada" />
+							<h:outputText value="#{MBEntradas.entradas.sperini}" />
+
+							<p:outputLabel value="Horário de Saída" />
+							<h:outputText value="#{MBEntradas.entradas.sperfim}" />
+
+						</h:panelGrid>
+
+						<h:panelGrid columns="2">
+
+							<p:commandButton value="Sim"
+								actionListener="#{MBEntradas.salvar}"
+								oncomplete="PF('dlgIncluir').hide(); tabelaUsuario.clearfilters();"
+								update=":frmUsuListagem:tblEntradas :msgGlobal"
+								action="ParkNewClient.xhtml?faces-redirect=true" />
+
+							<p:commandButton value="Não" onclick="PF('dlgIncluir').hide();" />
+						</h:panelGrid>
+
+					</h:form>
+
+				</p:dialog>
+
+				<p:dialog widgetVar="dlgAdCarrinho" closable="false"
+					draggable="false" modal="true" appendTo="@(body)" resizable="false"
+					header="Novo Item">
+					<h:form id="frmcarrinho">
+						<h:panelGrid id="pnlcarrinho" columns="2">
+							<h:outputText value="Ticket Nro." />
+							<h:outputText value="#{MBEntradas.entradas.id_controle}" />
+
+							<p:outputLabel value="Escolha o Produto" />
+							<p:selectOneMenu value="#{MBEntradas.entradas.carrinho_combo.id}"
+								filter="true">
+								<f:selectItem itemValue="0" itemLabel="Produto" />
+								<f:selectItems value="#{MBEntradas.carrinhocombo}" var="item"
+									itemValue="#{item.id}"
+									itemLabel="#{item.t_nome_item}  R$ #{item.st_valor} " />
+							</p:selectOneMenu>
+						</h:panelGrid>
+						<h:panelGrid columns="2">
+							<p:commandButton value="Gravar"
+								actionListener="#{MBEntradas.salvar_saidas}"
+								oncomplete="PF('dlgAdCarrinho').hide(); widgetVar_001.clearfilters();"
+								update=":frmUsuListagem:pnlListar"
+								action="ParkNewClient.xhtml?faces-redirect=true" />
+							<p:commandButton value="Cancelar"
+								onclick="PF('dlgAdCarrinho').hide();" />
+						</h:panelGrid>
+					</h:form>
+				</p:dialog>
+
+
+			</p:layoutUnit>
+
+		</p:layout>
+
+
+
+	</ui:define>
+</ui:composition>
+
+

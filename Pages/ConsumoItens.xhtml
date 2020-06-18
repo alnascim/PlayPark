@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	template="/templates/modeloSistema.xhtml">
+
+	<ui:define name="menu">
+		<ui:include src="/includes/menuPrincipal.xhtml" />
+	</ui:define>
+
+	<ui:define name="conteudo">
+
+		<h:body>
+			<h:form id="frmUsuConsulta" widgetVar="widgetVar_010">
+				<p:panel id="panel" style="width: 80%">
+
+					<h:panelGrid id="pnlConsulta" columns="5">
+						<p:outputLabel value="Comanda" />
+						<p:inputText value="#{MBConsumo.item.id_controle}" />
+					</h:panelGrid>
+					<h:panelGrid id="pnlBotao" columns="3">
+						<p:commandButton value="Pesquisar"
+							actionListener="#{MBConsumo.listarconsumo}"
+							update=":frmUsuListagem:pnlListar">
+						</p:commandButton>
+
+						<p:commandButton value="Carrinho de Compras"
+							actionListener="#{MBConsumo.prepararNovo}"
+							oncomplete="PF('dlgAdCarrinho').show();"
+							update=":frmcarrinho:pnlcarrinho">
+						</p:commandButton>
+
+						<p:commandButton value="Fechar Comanda"
+							oncomplete="PF('dlgFecharComanda').show();"
+							update=":frmFecharComanda:pnlFecharComanda">
+							<f:setPropertyActionListener target="#{MBConsumo.itens}"
+								value="#{item}" />
+						</p:commandButton>
+					</h:panelGrid>
+
+				</p:panel>
+
+			</h:form>
+			<h:form id="frmUsuListagem" widgetVar="widgetVar_001">
+				<p:panel style="width: 80%">
+					<h:panelGrid id="pnlListar">
+						<p:dataTable id="tbl_001"
+							emptyMessage="Nenhum Registro Encontrado."
+							value="#{MBConsumo.itens}" var="item" paginator="false" rows="20"
+							style="width: 100%">
+							<f:facet name="header">
+								Consumo 
+				            </f:facet>
+							<p:column headerText="Ticket Nro."
+								style="width:120px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Ticket Nro." />
+								</f:facet>
+								<h:outputText value="#{item.id_controle}" />
+							</p:column>
+
+							<p:column headerText="Item Consumido"
+								style="width:300px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Item Consumido" />
+								</f:facet>
+								<h:outputText value="#{item.t_nome_item}" />
+							</p:column>
+
+							<p:column headerText="Valor" style="width:100px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Valor" />
+								</f:facet>
+								<h:outputText value="#{item.st_valor}" />
+							</p:column>
+
+							<p:column headerText="Valor Atualizado"
+								style="width:100px;text-align:left;">
+								<f:facet name="header">
+									<h:outputText value="Valor" />
+								</f:facet>
+								<h:outputText value="#{item.st_valor_atual}" />
+							</p:column>
+
+
+							<p:column headerText="Remover Entrada"
+								style="width:60px;text-align:center;">
+								<p:commandButton icon="ui-icon-trash" title="Remover Entrada"
+									oncomplete="PF('dlgExcluir').show();"
+									update=":frmExcluir:pnlExcNovo">
+									<f:setPropertyActionListener target="#{MBConsumo.item}"
+										value="#{item}" />
+								</p:commandButton>
+
+							</p:column>
+
+						</p:dataTable>
+					</h:panelGrid>
+				</p:panel>
+			</h:form>
+			<p:dialog widgetVar="dlgAdCarrinho" closable="false"
+				draggable="false" modal="true" appendTo="@(body)" resizable="false"
+				header="Novo Item">
+				<h:form id="frmcarrinho">
+					<h:panelGrid id="pnlcarrinho" columns="2">
+
+						<p:outputLabel value="Escolha o Produto" />
+						<p:selectOneMenu value="#{MBConsumo.saidas.carrinho_combo.id}"
+							filter="true">
+							<f:selectItem itemValue="0" itemLabel="Produto" />
+							<f:selectItems value="#{MBConsumo.carrinhocombo}" var="item"
+								itemValue="#{item.id}"
+								itemLabel="#{item.t_nome_item}  R$ #{item.st_valor} " />
+						</p:selectOneMenu>
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Gravar"
+							actionListener="#{MBConsumo.salvar}"
+							oncomplete="PF('dlgAdCarrinho').hide(); widgetVar_001.clearfilters();"
+							update=":frmUsuListagem:pnlListar"
+							action="ConsumoItens.xhtml?faces-redirect=true" />
+						<p:commandButton value="Cancelar"
+							onclick="PF('dlgAdCarrinho').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+			<p:dialog widgetVar="dlgExcluir" closable="false" draggable="false"
+				modal="true" appendTo="@(body)" resizable="false"
+				header="Excluir Item">
+
+				<h:form id="frmExcluir">
+					<h:panelGrid id="pnlExcNovo" columns="2">
+						<h:outputText value="ID Interno" />
+						<h:outputText value="#{MBConsumo.item.id}" />
+
+						<h:outputText value="Nome do Item" />
+						<h:outputText value="#{MBConsumo.item.t_nome_item}" />
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Excluir"
+							actionListener="#{MBConsumo.excluir}"
+							oncomplete="PF('dlgExcluir').hide(); tabelaUsuario.clearfilters();"
+							update=":frmUsuListagem:tbl_001 :msgGlobal"
+							action="ConsumoItens.xhtml?faces-redirect=true" />
+						<p:commandButton value="Cancelar"
+							onclick="PF('dlgExcluir').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+			<p:dialog widgetVar="dlgFecharComanda" closable="false"
+				draggable="false" modal="true" appendTo="@(body)" resizable="false"
+				header="Confirmar Fechamento da Comanda  ?">
+				<h:form id="frmFecharComanda">
+					<h:panelGrid id="pnlFecharComanda" columns="2">
+						<h:outputText value="Ticket Número" />
+						<h:outputText value="#{MBConsumo.item.id_controle}" />
+
+						<p:outputLabel value="Tipo de Pagamento" />
+						<p:inputText value="#{MBConsumo.item.tipo_pagto}" size="40"
+							maxlength="99" />
+
+					</h:panelGrid>
+					<h:panelGrid columns="2">
+						<p:commandButton value="Sim"
+							actionListener="#{MBConsumo.fechar_comanda}"
+							oncomplete="PF('dlgFecharComanda').hide(); tabelaUsuario.clearfilters();"
+							update=":frmUsuListagem:tbl_001 :msgGlobal"
+							action="ConsumoItens.xhtml?faces-redirect=true" />
+						<p:commandButton value="Não"
+							onclick="PF('dlgFecharComanda').hide();" />
+					</h:panelGrid>
+				</h:form>
+			</p:dialog>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+
+
